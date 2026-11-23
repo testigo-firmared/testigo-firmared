@@ -12,7 +12,7 @@ import { fileURLToPath } from 'node:url';
 
 const AQUI = dirname(fileURLToPath(import.meta.url));
 const SITIO = (process.argv.indexOf('--sitio') > 0 ? process.argv[process.argv.indexOf('--sitio') + 1] : 'https://firmared.com').replace(/\/$/, '');
-const CLAVES = join(AQUI, 'claves'), REG = join(AQUI, 'registro');
+const CLAVES = existsSync(join(AQUI, 'claves', 'firmared-sello-ed25519.pem')) ? join(AQUI, 'claves') : AQUI, REG = join(AQUI, 'registro');   // las claves, en claves/ o sueltas al lado
 const AHORA = new Date().toISOString();
 const H = (...b) => { const h = createHash('sha256'); for (const x of b) h.update(x); return h.digest(); };
 const hex = (b) => Buffer.from(b).toString('hex');

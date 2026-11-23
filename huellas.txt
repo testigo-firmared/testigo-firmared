@@ -1,0 +1,26 @@
+FirmaRED · claves públicas de los sellos
+
+Cada certificado de FirmaRED lleva dos sellos sobre los mismos datos: uno clásico y uno poscuántico. La raíz del registro
+público lleva esos dos y un tercero, basado en hashes. Estas son las claves públicas con que se comprueban. Son las mismas
+que van adjuntas a cada certificado y a cada paquete de pruebas.
+
+Sello clásico · Ed25519 (RFC 8032)
+  Clave:    https://firmared.com/claves/firmared-sello-ed25519.pem
+  Huella:   5ea2e456bb6a3b900b3d79c514cbd8364c175bbb86d1760d5874a560886379a1
+  Es el SHA-256 de la clave en formato DER. En el certificado figura en la fila «Sello del certificado».
+  Para calcularla:   grep -v '^-----' firmared-sello-ed25519.pem | base64 -d | sha256sum
+
+Sello poscuántico · ML-DSA-65 (NIST FIPS 204)
+  Clave:    https://firmared.com/claves/firmared-sello-mldsa65.pem
+  Huella:   78c6f5c58c2a2e61de6c06a65a340e1d6822ebfbc928769e7a5a3ed4c9196cd4
+  Es el SHA-256 de los 1.952 bytes de la clave. En el certificado figura en la fila «Sello poscuántico».
+  Para calcularla:   grep -v '^-----' firmared-sello-mldsa65.pem | base64 -d | tail -c 1952 | sha256sum
+
+Tercer sello de la raíz del registro · SLH-DSA-SHA2-128s (NIST FIPS 205)
+  Clave:    https://firmared.com/claves/firmared-sello-slhdsa.pem
+  Huella:   39eefe9b0385a9baca7755526e09c416146112813e8b657f0039e9f151098539
+  Es el SHA-256 de los 32 bytes de la clave. Es la clave #key-slhdsa-2026 del DID de FirmaRED. En el paquete de pruebas de cada
+  firma va como firmared-clave-slhdsa.pem, con la firma de la raíz en registro-raiz.firma-slhdsa.bin.
+  Para calcularla:   grep -v '^-----' firmared-sello-slhdsa.pem | base64 -d | tail -c 32 | sha256sum
+
+Cómo se comprueba un certificado con estas claves: sección C de su Anexo técnico. La raíz del registro: el LEEME del paquete de pruebas.

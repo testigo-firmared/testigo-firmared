@@ -1,0 +1,29 @@
+name: testigo del registro de FirmaRED
+on:
+  schedule:
+    - cron: '27 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: testigo
+  cancel-in-progress: false
+jobs:
+  mirar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: mirar la raíz y comprobar los sellos
+        run: node testigo.mjs || echo "veredicto distinto de bien: codigo $?"
+      - name: anotar lo visto en el repositorio
+        run: |
+          git config user.name "testigo"
+          git config user.email "testigo@users.noreply.github.com"
+          git add registro ESTADO.md
+          git diff --cached --quiet && echo "nada nuevo que anotar" && exit 0
+          git commit -m "mirada $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push

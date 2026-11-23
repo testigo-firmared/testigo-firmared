@@ -18,7 +18,7 @@ jobs:
         with:
           node-version: '24'
       - name: mirar la raíz y comprobar los sellos
-        run: node testigo.mjs || echo "veredicto distinto de bien: codigo $?"
+        run: node testigo.mjs || echo "veredicto distinto de bien, codigo $?"
       - name: anotar lo visto en el repositorio
         run: |
           git config user.name "testigo"

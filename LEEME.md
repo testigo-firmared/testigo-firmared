@@ -11,11 +11,15 @@ El registro público de FirmaRED es un árbol de Merkle (RFC 9162) con una hoja 
 | Clásico | Ed25519 | RFC 8032 | `claves/firmared-sello-ed25519.pem` |
 | Poscuántico | ML-DSA-65 | NIST FIPS 204 | `claves/firmared-sello-mldsa65.pem` |
 | Poscuántico, basado en hashes | SLH-DSA-SHA2-128s | NIST FIPS 205 | `claves/firmared-sello-slhdsa.pem` |
+| Compuesto, poscuántico (categoría 5) | ML-DSA-87 | NIST FIPS 204 | `claves/firmared-sello-mldsa87.pem` |
+| Compuesto, basado en hashes (categoría 5) | SLH-DSA-SHA2-256s | NIST FIPS 205 | `claves/firmared-sello-slhdsa256s.pem` |
+
+Desde el 23 de noviembre de 2026 hay dos formatos de raíz. En el formato 1, la raíz lleva los tres primeros sellos. En el formato 2 (`FirmaRED-registro-2`), lleva el **sello compuesto**: Ed25519 + ML-DSA-87 + SLH-DSA-SHA2-256s, todo o nada; el texto firmado nombra esas tres claves por id y por huella, y las tres firmas tienen que verificar. Los sellos ML-DSA-65 y SLH-DSA-SHA2-128s siguen viniendo sueltos durante la transición: el testigo los comprueba si vienen, pero no deciden. El registro publica en su estado (`/api/public/registro/estado`, campo `formato2`) desde qué raíz rige el formato 2: después de ese corte, una raíz en formato 1 es un problema y queda anotado.
 
 Cada hora, `testigo.mjs`:
 
 1. Comprueba que las tres claves que el sitio publica en `firmared.com/claves/` sigan siendo las guardadas en `claves/`. Si cambian, lo dice.
-2. Baja la última raíz (`/api/public/registro/raiz`) y comprueba los tres sellos con esas claves, usando solo el OpenSSL que trae Node (ninguna biblioteca de FirmaRED).
+2. Baja la última raíz (`/api/public/registro/raiz`) y comprueba sus sellos según su formato, usando solo el OpenSSL que trae Node (ninguna biblioteca de FirmaRED).
 3. Comprueba que la raíz nueva **contenga** a la última que este testigo vio: pide la prueba de consistencia (`/api/public/registro/consistencia?de=N&a=M`) y la verifica según la RFC 9162. Así, borrar o cambiar una firma anterior quedaría a la vista.
 4. Anota: `registro/corridas.jsonl` (una línea por mirada), `registro/raices.jsonl` (una línea por raíz nueva y bien verificada), `registro/ultima.json` (lo que va a comparar la próxima vez) y `ESTADO.md` (el resumen).
 

@@ -23,4 +23,39 @@ Tercer sello de la raíz del registro · SLH-DSA-SHA2-128s (NIST FIPS 205)
   firma va como firmared-clave-slhdsa.pem, con la firma de la raíz en registro-raiz.firma-slhdsa.bin.
   Para calcularla:   grep -v '^-----' firmared-sello-slhdsa.pem | base64 -d | tail -c 32 | sha256sum
 
+Lo que FirmaRED afirma de sí misma, firmado · y quién la mira desde afuera
+  Manifiesto:  https://firmared.com/.well-known/firmared.json
+               Claves, sellos, direcciones y políticas, en un solo archivo, firmado con las tres claves de arriba sobre los
+               mismos bytes (el JSON compacto del objeto «manifiesto»). Las firmas van en «sellos», en base64.
+  DID:         https://firmared.com/.well-known/did.json   las mismas claves, en formato Multikey.
+  Testigo:     https://github.com/testigo-firmared/testigo-firmared
+               Un repositorio ajeno a este servidor mira la raíz del registro cada hora, verifica los tres sellos y la
+               consistencia con la raíz anterior, y anota lo que ve. Cualquiera puede correr el suyo.
+
 Cómo se comprueba un certificado con estas claves: sección C de su Anexo técnico. La raíz del registro: el LEEME del paquete de pruebas.
+
+Sello compuesto de la raíz del registro · desde la raíz Nº 17 (formato FirmaRED-registro-2)
+  Desde esa raíz, el texto firmado de cada raíz nombra tres sellos y la huella de cada clave. Valen los tres juntos:
+  una raíz con ese número, o uno mayor, que no traiga los tres no vale. El número de corte figura también en
+  https://firmared.com/api/public/registro/estado  (campo formato2.corte).
+
+  1 · Ed25519 (RFC 8032): la clave del sello clásico, más arriba.
+
+  2 · ML-DSA-87 (NIST FIPS 204, categoría 5)
+  Clave:    https://firmared.com/claves/firmared-sello-mldsa87.pem
+  Huella:   8218418aa0b2d4fe1eebfc2a679d858c140d868e3b7a145cf163baba7896cd88
+  Es el SHA-256 de los 2.592 bytes de la clave. Solo sella raíces del registro.
+  Para calcularla:   grep -v '^-----' firmared-sello-mldsa87.pem | base64 -d | tail -c 2592 | sha256sum
+
+  3 · SLH-DSA-SHA2-256s (NIST FIPS 205, basada en hashes, categoría 5)
+  Clave:    https://firmared.com/claves/firmared-sello-slhdsa256s.pem
+  Huella:   c97e46fd63a631f53dbbc2cae442b9a474d99cc7819059bcee0bbf474376048a
+  Es el SHA-256 de los 64 bytes de la clave. Solo sella raíces del registro.
+  Para calcularla:   grep -v '^-----' firmared-sello-slhdsa256s.pem | base64 -d | tail -c 64 | sha256sum
+
+  Durante la transición, cada raíz lleva además los dos sellos sueltos de antes (ML-DSA-65 y SLH-DSA-SHA2-128s, con las claves
+  de más arriba), para que los verificadores ya publicados sigan funcionando. No reemplazan a los tres del sello compuesto.
+
+Las raíces 1 a 15 se publicaron con el sello Ed25519. El 23 de noviembre de 2026 (UTC) se les agregaron los dos sellos
+poscuánticos sueltos sobre el mismo texto; cada uno lleva esa fecha en el campo «agregado». La raíz 16 se publicó después,
+en formato 1, ya con los tres sellos sueltos desde el primer momento.

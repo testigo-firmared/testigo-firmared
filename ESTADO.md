@@ -1,6 +1,6 @@
 # Estado del testigo
 
-Última mirada: 2026-11-23T17:26:46.110Z · veredicto: **bien**
+Última mirada: 2026-11-23T18:24:14.463Z · veredicto: **bien**
 
 - Raíz 16 · 280 firmas · publicada el 2026-11-23T14:11:24.457Z · Bitcoin: confirmado
 - Formato 1 · sin corte todavía

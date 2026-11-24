@@ -1,8 +1,8 @@
 # Estado del testigo
 
-Última mirada: 2026-11-24T12:26:07.988Z · veredicto: **bien**
+Última mirada: 2026-11-24T13:50:25.879Z · veredicto: **bien**
 
-- Raíz 17 · 282 firmas · publicada el 2026-11-24T10:27:56.010Z · Bitcoin: en curso
+- Raíz 17 · 282 firmas · publicada el 2026-11-24T10:27:56.010Z · Bitcoin: confirmado
 - Formato 2 · corte al formato 2 en la raíz 17
 - Sello compuesto: Ed25519 verifica · ML-DSA-87 verifica · SLH-DSA-SHA2-256s verifica · transición: ML-DSA-65 verifica · SLH-DSA-SHA2-128s verifica
 - Consistencia: misma raíz que la última vez
